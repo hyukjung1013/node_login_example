@@ -1,1 +1,20 @@
 <h1>signup.ejs</h1>
+<form action="/auth/signup_process" method="post"> 
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email"/>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"/>
+    </div>
+    <div>
+        <label for="confirm_password">confirm</label>
+        <input type="password" id="confirm_password" name="confirm_password"/>
+    </div>
+    <div>
+        <label for="nickname">Nickname</label>
+        <input type="text" id="nickname" name="nickname"/>
+    </div>
+    <button type="submit">Sign Up</button>
+</form>
