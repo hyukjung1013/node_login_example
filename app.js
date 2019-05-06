@@ -3,16 +3,19 @@ const path = require('path');
 const app = express();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const bodyParser = require('body-parser')
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(session({
     secret: 'my_secret_key',
     resave: false,
     saveUninitialized: true,
     store: new FileStore()
-    // 'session-file-store' store session data into files. (directory: __dirname/sessions/)
 }));
 
 const pageRouter = require('./routes/page');
@@ -22,9 +25,6 @@ app.use('/', pageRouter);
 app.use('/auth', authRouter);
 
 app.use('/session', (req, res) => {
-    
-    console.log('req.session: ', req.session);
-
     if (req.session.num === undefined)  
         req.session.num = 1;
     else    
