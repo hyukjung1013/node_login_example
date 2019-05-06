@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    if(req.session.isLoggedIn) {
-        res.render('main', { nickname: req.session.nickname });
+    if(req.user) {
+        res.render('main', { nickname: req.user.nickname });
     } else {
         res.render('main', { nickname: '' });
     }

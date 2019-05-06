@@ -1,36 +1,24 @@
 const express = require('express');
+const passport = require('../lib/passport');
 const router = express.Router();
 
 router.get('/login', (req, res) => {
     res.render('login');
 });
 
-var dummyUser = {
-    email: 'ronaldo@gmail.com',
-    password: 'ronaldo',
-    nickname: 'ronaldo'
-}
-
-router.post('/login_process', (req, res) => {
-    var email = req.body.email;
-    var password = req.body.password;
-
-    if ( email === dummyUser.email && password === dummyUser.password ) {
-        req.session.isLoggedIn = true;
-        req.session.nickname = dummyUser.nickname;
-        req.session.save(() => {
-            res.redirect('/');
-        });
-    } else {
-        res.send('Wrong User Information');
-    }
-});
+router.post('/login_process', 
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/auth/login'
+    })
+);
 
 router.get('/logout', (req, res) => {
-    req.session.destroy((error) => {
+    req.logout();
+    req.session.save(function() {
         res.redirect('/');
     });
-})
+});
 
 router.get('/signup', (req, res) => {
     res.render('signup');
