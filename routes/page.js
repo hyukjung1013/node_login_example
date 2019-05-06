@@ -3,9 +3,9 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     if(req.user) {
-        res.render('main', { nickname: req.user.nickname });
+        res.render('main', { email: req.user.email });
     } else {
-        res.render('main', { nickname: '' });
+        res.render('main', { email: '' });
     }
 });
 

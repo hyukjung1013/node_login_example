@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('../lib/passport');
+const shortId = require('shortid');
 const router = express.Router();
 const db = require('../lib/lowdb');
 
@@ -14,7 +15,9 @@ router.post('/login_process',
     })
 );
 
-router.get('/facebook', passport.authenticate('facebook'));
+router.get('/facebook', passport.authenticate('facebook', {
+    scope: 'email'
+}));
 
 router.get('/facebook/callback', passport.authenticate('facebook', {
     successRedirect: '/',
@@ -27,12 +30,22 @@ router.get('/signup', (req, res) => {
 
 router.post('/signup_process', (req, res) => {
     var body = req.body;
-    var user = {
-        email: body.email,
-        password: body.password,
-        nickname: body.nickname
-    };
-    db.get('users').push(user).write();
+
+    var previous_user = db.get('users').find( { email: body.email} ).value();
+    if (previous_user) {
+        previous_user.password = req.body.password;
+        previous_user.displayName = req.body.displayName;
+        db.get('users').find( {id: previous_user.id} ).assign(previous_user).write();
+
+    } else {
+        var user = {
+            id: shortId.generate(),
+            email: body.email,
+            password: body.password,
+            displayName: body.displayName
+        };
+        db.get('users').push(user).write();
+    }
     req.login(user, function(err) {
         // Automatically logged in after signed up.
         return res.redirect('/');
