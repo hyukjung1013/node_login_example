@@ -1,2 +1,3 @@
 sessions/*
 db.json
+config/facebook.json
